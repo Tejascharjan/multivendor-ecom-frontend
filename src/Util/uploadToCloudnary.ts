@@ -1,6 +1,6 @@
 export const uploadToCloudnary = async(pics:any)=>{
-    const cloud_name = "your_cloud_name"
-    const upload_preset="your_preset"
+    const cloud_name = "dvuzyzdbo"
+    const upload_preset="my_default"
 
     if(pics){
         const data = new FormData();
