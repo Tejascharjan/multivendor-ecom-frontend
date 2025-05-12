@@ -11,36 +11,55 @@ import {
 } from "@mui/icons-material";
 import { Button, Divider } from "@mui/material";
 import { teal } from "@mui/material/colors";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import SimilarProducts from "./SimilarProducts";
 import ReviewCard from "../Review/ReviewCard";
+import { useAppDispatch, useAppSelector } from "../../../State/Store";
+import { useParams } from "react-router-dom";
+import { fetchProductById } from "../../../State/customer/ProductSlice";
 
 const ProductDetails = () => {
      const [quantity, setQuantity] = React.useState(1);
+     const dispatch = useAppDispatch();
+     const { productId } = useParams();
+     const { product } = useAppSelector((store) => store);
+     const [activeImage, setActiveImage] = useState(0);
+
+     useEffect(() => {
+          dispatch(fetchProductById(Number(productId)));
+     }, [productId]);
+
+     const handleActiveImage = (value: number) => () => {
+          setActiveImage(value);
+     };
+
      return (
           <div className="px-5 lg:px-20 pt-10">
                <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
                     <section className="flex flex-col lg:flex-row gap-5">
                          <div className="w-full lg:w-[15%] flex flex-wrap lg:flex-col gap-3">
-                              {[1, 1, 1, 1].map((item) => (
+                              {product.product?.images.map((item, index) => (
                                    <img
+                                        onClick={handleActiveImage(index)}
                                         className="lg:w-full w-[50px] cursor-pointer rounded-md"
-                                        src="https://rukminim2.flixcart.com/image/612/612/xif0q/smartwatch/n/o/z/-original-imah76jstup5zdww.jpeg?q=70"
+                                        src={item}
                                    />
                               ))}
                          </div>
                          <div className="w-full lg:w-[85%]">
                               <img
                                    className=" w-full rounded-md"
-                                   src="https://rukminim2.flixcart.com/image/612/612/xif0q/smartwatch/n/o/z/-original-imah76jstup5zdww.jpeg?q=70"
+                                   src={product.product?.images[activeImage]}
                                    alt=""
                               />
                          </div>
                     </section>
 
                     <section>
-                         <h1 className="font-bold text-lg text-primary-color">Brand Name</h1>
-                         <p className="text-gray-500 font-semibold">Product Title</p>
+                         <h1 className="font-bold text-lg text-primary-color">
+                              {product.product?.seller?.businessDetails.businessName}
+                         </h1>
+                         <p className="text-gray-500 font-semibold">{product.product?.title}</p>
                          <div className="flex justify-between items-center py-2 border border-gray-200 w-[180px] px-3 mt-5">
                               <div className="flex gap-1 items-center">
                                    <span>4</span>
@@ -51,9 +70,15 @@ const ProductDetails = () => {
                          </div>
                          <div>
                               <div className="price flex items-center gap-3 mt-5 text-2xl">
-                                   <span className="font-semibold text-gray-800">₹ 9043</span>
-                                   <span className="line-through text-gray-400">₹ 3422</span>
-                                   <span className="text-primary-color font-semibold">10%</span>
+                                   <span className="font-semibold text-gray-800">
+                                        ₹ {product.product?.sellingPrice}
+                                   </span>
+                                   <span className="line-through text-gray-400">
+                                        ₹ {product.product?.mrpPrice}
+                                   </span>
+                                   <span className="text-primary-color font-semibold">
+                                        {product.product?.discountPercent}%
+                                   </span>
                               </div>
                               <p className="text-sm">
                                    Inclusive of all taxes. Free Shipping above ₹1500
@@ -113,11 +138,7 @@ const ProductDetails = () => {
                               </Button>
                          </div>
                          <div className="mt-5">
-                              <p>
-                                   Lorem, ipsum dolor sit amet consectetur adipisicing elit.
-                                   Quisquam, facere ea. Sit facere commodi distinctio harum. Minima
-                                   asperiores neque corporis?
-                              </p>
+                              <p>{product.product?.description}</p>
                          </div>
                          <div className="mt-7 space-y-5">
                               <ReviewCard />

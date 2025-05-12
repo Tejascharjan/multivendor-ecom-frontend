@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { electronicsLevelThree } from "../../../data/category/level three/electronicsLevelThree";
 import { furnitureLevelThree } from "../../../data/category/level three/furnitureLevelThree";
 import { menLevelThree } from "../../../data/category/level three/menLevelThree";
@@ -24,6 +24,8 @@ import {
 import { AddPhotoAlternate, Close } from "@mui/icons-material";
 import { colors } from "../../../data/filter/colors";
 import { mainCategory } from "../../../data/mainCategory";
+import { useAppDispatch } from "../../../State/Store";
+import { createProduct } from "../../../State/seller/sellerProductSlice";
 
 const categoryTwo: { [key: string]: any[] } = {
      men: menLevelTwo,
@@ -46,6 +48,7 @@ const categoryThree: { [key: string]: any[] } = {
 const AddProduct = () => {
      const [uploadImage, setUploadingImage] = useState(false);
      const [snackbarOpen, setOpenSnackbar] = useState(false);
+     const dispatch = useAppDispatch();
 
      const formik = useFormik({
           initialValues: {
@@ -63,6 +66,7 @@ const AddProduct = () => {
           },
           onSubmit: (values) => {
                console.log(values);
+               dispatch(createProduct({ request: values, jwt: localStorage.getItem("jwt") }));
           },
      });
 

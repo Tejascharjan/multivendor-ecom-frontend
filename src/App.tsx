@@ -9,26 +9,42 @@ import Review from "./customer/pages/Review/Review";
 import Cart from "./customer/pages/Cart/Cart";
 import Checkout from "./customer/pages/Checkout/Checkout";
 import Account from "./customer/pages/Account/Account";
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, useNavigate } from "react-router-dom";
 import BecomeSeller from "./customer/pages/Become Seller/BecomeSeller";
 import SellerDashboard from "./seller/pages/SellerDashboard/SellerDashboard";
 import AdminDashboard from "./admin/pages/Dashboard/AdminDashboard";
 import { useEffect } from "react";
-import { fetchProducts } from "./State/fetchProduct";
-import { useAppDispatch } from "./State/Store";
+import { useAppDispatch, useAppSelector } from "./State/Store";
 import { fetchSellerProfile } from "./State/seller/sellerSlice";
+import Auth from "./customer/pages/Auth/Auth";
+import { fetchUserProfile } from "./State/AuthSlice";
 
 function App() {
      const dispatch = useAppDispatch();
+     const { seller, auth } = useAppSelector((store) => store);
+     const navigate = useNavigate();
+
      useEffect(() => {
           dispatch(fetchSellerProfile(localStorage.getItem("jwt") || ""));
      }, []);
+
+     useEffect(() => {
+          if (seller.profile) {
+               navigate("/seller");
+          }
+     }, [seller.profile]);
+
+     useEffect(() => {
+          dispatch(fetchUserProfile({ jwt: auth.jwt || localStorage.getItem("jwt") || "" }));
+     }, [auth.jwt]);
+
      return (
           <ThemeProvider theme={customerTheme}>
                <div>
                     <Navbar />
                     <Routes>
                          <Route path="/" element={<Home />} />
+                         <Route path="/login" element={<Auth />} />
                          <Route path="/products/:category" element={<Product />} />
                          <Route path="/reviews/:productId" element={<Review />} />
                          <Route

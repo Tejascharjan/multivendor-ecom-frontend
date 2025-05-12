@@ -3,22 +3,19 @@ import "./ProductCard.css";
 import { Favorite, ModeComment, Translate } from "@mui/icons-material";
 import { Button } from "@mui/material";
 import { teal } from "@mui/material/colors";
+import { Product } from "../../../types/ProductTypes";
+import { useNavigate } from "react-router-dom";
 
-const images = [
-     "https://rukminim2.flixcart.com/image/832/832/xif0q/smartwatch/m/v/i/-original-imah76cazsbbt8hu.jpeg?q=70&crop=false",
-     "https://rukminim2.flixcart.com/image/612/612/xif0q/smartwatch/n/o/z/-original-imah76jstup5zdww.jpeg?q=70",
-];
-const ProductCard = () => {
+const ProductCard = ({ item }: { item: Product }) => {
      const [currentImage, setCurrentImage] = useState(0);
      const [isHovered, setIsHovered] = useState(false);
+     const navigate = useNavigate();
 
      useEffect(() => {
           let interval: any;
           if (isHovered) {
                interval = setInterval(() => {
-                    setCurrentImage(
-                         (prevImage) => (prevImage + 1) % images.length
-                    );
+                    setCurrentImage((prevImage) => (prevImage + 1) % item.images.length);
                }, 1000);
           } else if (interval) {
                clearInterval(interval);
@@ -29,21 +26,26 @@ const ProductCard = () => {
 
      return (
           <>
-               <div className="group px-4 relative">
+               <div
+                    onClick={() =>
+                         navigate(
+                              `/product-details/${item.category?.categoryId}/${item.title}/${item.id}`
+                         )
+                    }
+                    className="group px-4 relative"
+               >
                     <div
                          className="card"
                          onMouseEnter={() => setIsHovered(true)}
                          onMouseLeave={() => setIsHovered(false)}
                     >
-                         {images.map((item, index) => (
+                         {item.images.map((item, index) => (
                               <img
                                    className="card-media object-top"
                                    src={item}
                                    alt=""
                                    style={{
-                                        transform: `translateX(${
-                                             (index - currentImage) * 100
-                                        }%)`,
+                                        transform: `translateX(${(index - currentImage) * 100}%)`,
                                    }}
                               />
                          ))}
@@ -51,22 +53,12 @@ const ProductCard = () => {
                          {isHovered && (
                               <div className="indicator flex flex-col items-center space-y-2">
                                    <div className="flex gap-3">
-                                        <Button
-                                             variant="contained"
-                                             color="secondary"
-                                        >
-                                             <Favorite
-                                                  sx={{ color: teal[500] }}
-                                             />
+                                        <Button variant="contained" color="secondary">
+                                             <Favorite sx={{ color: teal[500] }} />
                                         </Button>
 
-                                        <Button
-                                             variant="contained"
-                                             color="secondary"
-                                        >
-                                             <ModeComment
-                                                  sx={{ color: teal[500] }}
-                                             />
+                                        <Button variant="contained" color="secondary">
+                                             <ModeComment sx={{ color: teal[500] }} />
                                         </Button>
                                    </div>
                               </div>
@@ -74,16 +66,16 @@ const ProductCard = () => {
                     </div>
                     <div className="details pt-3 space-y-1 group-hover-effect rounded-md">
                          <div className="name ">
-                              <h1>Brand Name</h1>
-                              <p>Product Name</p>
+                              <h1>{item.seller?.businessDetails.businessName}</h1>
+                              <p>{item.title}</p>
                          </div>
                          <div className="price flex items-center gap-3">
                               <span className="font-semibold text-gray-800">
-                                   ₹ 9043
+                                   ₹ {item.sellingPrice}
                               </span>
-                              <span className="thin-line-through">₹ 3422</span>
+                              <span className="thin-line-through">₹ {item.mrpPrice}</span>
                               <span className="text-primary-color font-semibold">
-                                   10%
+                                   {item.discountPercent}%
                               </span>
                          </div>
                     </div>
