@@ -1,6 +1,9 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { Cart, CartItem } from "../../types/cartType";
 import { api } from "../../config/Api";
+import { sumCartItemMrpPrice, sumCartItemSellingPrice } from "../../Util/sumCartItemMrpPrice";
+import { CouponState } from "../../types/couponTypes";
+import { applyCoupon } from "./couponSlice";
 
 interface CartState {
      cart: Cart | null;
@@ -56,7 +59,7 @@ export const addItemToCart = createAsyncThunk<
      }
 });
 
-export const delateCartItem = createAsyncThunk<any, { jwt: string; cartItemId: number }>(
+export const deleteCartItem = createAsyncThunk<any, { jwt: string; cartItemId: number }>(
      "cart/deleteCartItem",
      async ({ jwt, cartItemId }, { rejectWithValue }) => {
           try {
@@ -127,6 +130,34 @@ const cartSlice = createSlice({
                .addCase(addItemToCart.rejected, (state, action) => {
                     state.loading = false;
                     state.error = action.payload as string;
+               })
+               //cart item
+
+               .addCase(deleteCartItem.pending, (state) => {
+                    state.loading = true;
+                    state.error = null;
+               })
+               .addCase(deleteCartItem.fulfilled, (state, action) => {
+                    if (state.cart) {
+                         state.cart.cartItems = state.cart.cartItems.filter(
+                              (item: CartItem) => item.id !== action.meta.arg.cartItemId
+                         );
+                         const mrpPrice = sumCartItemMrpPrice(state.cart?.cartItems || []);
+                         const sellingPrice = sumCartItemSellingPrice(state.cart?.cartItems || []);
+                         state.cart.totalSellingPrice = sellingPrice;
+                         state.cart.totalMrpPrice = mrpPrice;
+                    }
+                    state.loading = false;
+               })
+               .addCase(updateCartItem.rejected, (state, action) => {
+                    state.loading = false;
+                    state.error = action.payload as string;
+               })
+               .addCase(applyCoupon.fulfilled, (state, action) => {
+                    state.loading = false;
+                    state.cart = action.payload;
                });
      },
 });
+
+export default cartSlice.reducer;

@@ -72,7 +72,7 @@ const Navbar = () => {
                                    </Button>
                               )}
 
-                              <IconButton>
+                              <IconButton onClick={() => navigate("/wishlist")}>
                                    <FavoriteBorder sx={{ fontSize: 29 }} />
                               </IconButton>
 

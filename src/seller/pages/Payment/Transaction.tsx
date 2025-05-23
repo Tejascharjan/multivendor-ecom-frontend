@@ -6,6 +6,9 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
+import { useAppDispatch, useAppSelector } from "../../../State/Store";
+import { useEffect } from "react";
+import { fetchTranssactionBySeller } from "../../../State/seller/transactionSlice";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
      [`&.${tableCellClasses.head}`]: {
@@ -40,26 +43,37 @@ const rows = [
 ];
 
 export default function TransactionTable() {
+     const dispatch = useAppDispatch();
+     const { transactions } = useAppSelector((state) => state);
+
+     useEffect(() => {
+          dispatch(fetchTranssactionBySeller(localStorage.getItem("jwt") || ""));
+     }, []);
+
      return (
           <TableContainer component={Paper}>
-               <Table sx={{ minWidth: 700 }} aria-label="customized table">
+               <Table sx={{ minWidth: 700 }} aria-label='customized table'>
                     <TableHead>
                          <TableRow>
                               <StyledTableCell>Date</StyledTableCell>
-                              <StyledTableCell align="right">Customer Details</StyledTableCell>
-                              <StyledTableCell align="right">Order</StyledTableCell>
-                              <StyledTableCell align="right">Amount</StyledTableCell>
+                              <StyledTableCell align='right'>Customer Details</StyledTableCell>
+                              <StyledTableCell align='right'>Order</StyledTableCell>
+                              <StyledTableCell align='right'>Amount</StyledTableCell>
                          </TableRow>
                     </TableHead>
                     <TableBody>
-                         {rows.map((row) => (
-                              <StyledTableRow key={row.name}>
-                                   <StyledTableCell component="th" scope="row">
-                                        {row.name}
+                         {transactions.transactions.map((item) => (
+                              <StyledTableRow key={item.id}>
+                                   <StyledTableCell component='th' scope='row'>
+                                        {item.date}
                                    </StyledTableCell>
-                                   <StyledTableCell align="right">{row.calories}</StyledTableCell>
-                                   <StyledTableCell align="right">{row.carbs}</StyledTableCell>
-                                   <StyledTableCell align="right">{row.protein}</StyledTableCell>
+                                   <StyledTableCell component='th' scope='row'>
+                                        {item.customer.email}
+                                   </StyledTableCell>
+                                   <StyledTableCell align='right'>{item.order.id}</StyledTableCell>
+                                   <StyledTableCell align='right'>
+                                        {item.order.totalSellingPrice}
+                                   </StyledTableCell>
                               </StyledTableRow>
                          ))}
                     </TableBody>
