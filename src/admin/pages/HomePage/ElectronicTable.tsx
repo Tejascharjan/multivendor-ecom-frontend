@@ -1,9 +1,11 @@
+import { useAppSelector } from "../../../State/Store";
 import HomeCategoryTable from "./HomeCategoryTable";
 
 const ElectronicTable = () => {
+     const { customer } = useAppSelector((store) => store);
      return (
           <div>
-               <HomeCategoryTable />
+               <HomeCategoryTable data={customer.homePageData?.electricCategories || []} />
           </div>
      );
 };

@@ -20,6 +20,8 @@ import Auth from "./customer/pages/Auth/Auth";
 import { fetchUserProfile } from "./State/AuthSlice";
 import PaymentSuccess from "./customer/pages/PaymentSuccess";
 import Wishlist from "./customer/Wishlist/Wishlist";
+import { createHomeCategories } from "./State/customer/customerSlice";
+import { homeCategories } from "./data/HomeCategories";
 
 function App() {
      const dispatch = useAppDispatch();
@@ -28,6 +30,7 @@ function App() {
 
      useEffect(() => {
           dispatch(fetchSellerProfile(localStorage.getItem("jwt") || ""));
+          dispatch(createHomeCategories(homeCategories));
      }, []);
 
      useEffect(() => {
@@ -45,22 +48,22 @@ function App() {
                <div>
                     <Navbar />
                     <Routes>
-                         <Route path="/" element={<Home />} />
-                         <Route path="/login" element={<Auth />} />
-                         <Route path="/products/:category" element={<Product />} />
-                         <Route path="/reviews/:productId" element={<Review />} />
+                         <Route path='/' element={<Home />} />
+                         <Route path='/login' element={<Auth />} />
+                         <Route path='/products/:category' element={<Product />} />
+                         <Route path='/reviews/:productId' element={<Review />} />
                          <Route
-                              path="/product-details/:categoryId/:name/:productId"
+                              path='/product-details/:categoryId/:name/:productId'
                               element={<ProductDetails />}
                          />
-                         <Route path="/cart" element={<Cart />} />
-                         <Route path="/wishlist" element={<Wishlist />} />
-                         <Route path="/checkout" element={<Checkout />} />
-                         <Route path="/payment-success/:orderId" element={<PaymentSuccess />} />
-                         <Route path="/account/*" element={<Account />} />
-                         <Route path="/become-seller" element={<BecomeSeller />} />
-                         <Route path="/seller/*" element={<SellerDashboard />} />
-                         <Route path="/admin/*" element={<AdminDashboard />} />
+                         <Route path='/cart' element={<Cart />} />
+                         <Route path='/wishlist' element={<Wishlist />} />
+                         <Route path='/checkout' element={<Checkout />} />
+                         <Route path='/payment-success/:orderId' element={<PaymentSuccess />} />
+                         <Route path='/account/*' element={<Account />} />
+                         <Route path='/become-seller' element={<BecomeSeller />} />
+                         <Route path='/seller/*' element={<SellerDashboard />} />
+                         <Route path='/admin/*' element={<AdminDashboard />} />
                     </Routes>
                </div>
           </ThemeProvider>

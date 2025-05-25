@@ -8,6 +8,9 @@ import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import { Button, IconButton } from "@mui/material";
 import { Delete, Edit } from "@mui/icons-material";
+import { useAppDispatch, useAppSelector } from "../../../State/Store";
+import { useEffect } from "react";
+import { getAllDeals } from "../../../State/admin/dealSlice";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
      [`&.${tableCellClasses.head}`]: {
@@ -42,34 +45,47 @@ const rows = [
 ];
 
 export default function DealTable() {
+     const dispatch = useAppDispatch();
+     const { deal } = useAppSelector((store) => store);
+
+     useEffect(() => {
+          dispatch(getAllDeals());
+     }, []);
+
      return (
           <TableContainer component={Paper}>
-               <Table sx={{ minWidth: 700 }} aria-label="customized table">
+               <Table sx={{ minWidth: 700 }} aria-label='customized table'>
                     <TableHead>
                          <TableRow>
                               <StyledTableCell>No</StyledTableCell>
                               <StyledTableCell>Image</StyledTableCell>
                               <StyledTableCell>Category</StyledTableCell>
-                              <StyledTableCell align="right">Discount</StyledTableCell>
-                              <StyledTableCell align="right">Update</StyledTableCell>
-                              <StyledTableCell align="right">Delete</StyledTableCell>
+                              <StyledTableCell align='right'>Discount</StyledTableCell>
+                              <StyledTableCell align='right'>Update</StyledTableCell>
+                              <StyledTableCell align='right'>Delete</StyledTableCell>
                          </TableRow>
                     </TableHead>
                     <TableBody>
-                         {rows.map((row) => (
-                              <StyledTableRow key={row.name}>
-                                   <StyledTableCell component="th" scope="row">
-                                        {row.name}
+                         {deal.deals.map((item, index) => (
+                              <StyledTableRow key={item.id}>
+                                   <StyledTableCell component='th' scope='row'>
+                                        {index + 1}
                                    </StyledTableCell>
-                                   <StyledTableCell>{row.calories}</StyledTableCell>
-                                   <StyledTableCell>{row.fat}</StyledTableCell>
-                                   <StyledTableCell align="right">{row.carbs}</StyledTableCell>
-                                   <StyledTableCell align="right">
+                                   <StyledTableCell>
+                                        <img
+                                             className='w-20 rounded-md'
+                                             src={item.category.image}
+                                             alt=''
+                                        />
+                                   </StyledTableCell>
+                                   <StyledTableCell>{item.category.categoryId}</StyledTableCell>
+                                   <StyledTableCell align='right'>{item.discount}</StyledTableCell>
+                                   <StyledTableCell align='right'>
                                         <Button>
                                              <Edit />
                                         </Button>
                                    </StyledTableCell>
-                                   <StyledTableCell align="right">
+                                   <StyledTableCell align='right'>
                                         <IconButton>
                                              <Delete sx={{ color: "red" }} />
                                         </IconButton>

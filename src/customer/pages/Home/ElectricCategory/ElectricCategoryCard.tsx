@@ -1,14 +1,10 @@
-import React from "react";
+import { HomeCategory } from "../../../../types/homeCategoryTypes";
 
-const ElectricCategoryCard = () => {
+const ElectricCategoryCard = ({ item }: { item: HomeCategory }) => {
      return (
-          <div>
-               <img
-                    className="object-contain h-10"
-                    src="https://rukminim2.flixcart.com/flap/80/80/image/22fddf3c7da4c4f4.png?q=100"
-                    alt=""
-               />
-               <h2 className="font-semibold text-sm">Mobile</h2>
+          <div className='flex flex-col gap-2 justify-center'>
+               <img className='object-contain h-10' src={item.image} alt='' />
+               <h2 className='font-semibold text-sm text-center'>{item.name}</h2>
           </div>
      );
 };

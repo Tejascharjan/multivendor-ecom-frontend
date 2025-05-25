@@ -9,27 +9,38 @@ import {
      Typography,
 } from "@mui/material";
 import { useFormik } from "formik";
+import { useAppDispatch, useAppSelector } from "../../../State/Store";
+import { createDeal } from "../../../State/admin/dealSlice";
 
 const CreateDealForm = () => {
+     const dispatch = useAppDispatch();
+     const { customer } = useAppSelector((store) => store);
+
      const formik = useFormik({
           initialValues: {
                discount: 0,
                category: "",
           },
           onSubmit: (values) => {
-               console.log(values);
+               const reqData = {
+                    discount: values.discount,
+                    category: {
+                         id: values.category,
+                    },
+               };
+               dispatch(createDeal(reqData));
           },
      });
 
      return (
-          <Stack component="form" spacing={3} onSubmit={formik.handleSubmit}>
-               <Typography variant="h4" className="text-center">
+          <Stack component='form' spacing={3} onSubmit={formik.handleSubmit}>
+               <Typography variant='h4' className='text-center'>
                     Create Deal
                </Typography>
 
                <TextField
-                    label="Discount"
-                    name="discount"
+                    label='Discount'
+                    name='discount'
                     value={formik.values.discount}
                     onChange={formik.handleChange}
                     fullWidth
@@ -38,20 +49,20 @@ const CreateDealForm = () => {
                />
 
                <FormControl fullWidth>
-                    <InputLabel id="demo-simple-select-label">Category</InputLabel>
+                    <InputLabel id='demo-simple-select-label'>Category</InputLabel>
                     <Select
-                         labelId="demo-simple-select-label"
-                         id="demo-simple-select"
+                         labelId='demo-simple-select-label'
+                         id='demo-simple-select'
                          value={formik.values.category}
-                         label="Category"
+                         label='Category'
                          onChange={formik.handleChange}
                     >
-                         <MenuItem value={10}>Ten</MenuItem>
-                         <MenuItem value={20}>Twenty</MenuItem>
-                         <MenuItem value={30}>Thirty</MenuItem>
+                         {customer.homePageData?.dealCategories.map((item) => (
+                              <MenuItem value={item.id}>{item.name}</MenuItem>
+                         ))}
                     </Select>
                </FormControl>
-               <Button type="submit" variant="contained" fullWidth sx={{ py: ".9rem" }}>
+               <Button type='submit' variant='contained' fullWidth sx={{ py: ".9rem" }}>
                     Create Deal
                </Button>
           </Stack>
